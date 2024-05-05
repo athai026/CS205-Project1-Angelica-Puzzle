@@ -113,33 +113,21 @@ class Angelica:
             right = copy.deepcopy(curr)
             right.move_right(choice)
             pq.put((right.f, right))
-            # print(f'f: {right.f}, g: {right.g}, h: {right.h}')
-            # right.print_puzzle()
-            # print('added right')
 
         if curr.check_left():
             left = copy.deepcopy(curr)
             left.move_left(choice)
             pq.put((left.f, left))
-            # print(f'f: {left.f}, g: {left.g}, h: {left.h}')
-            # left.print_puzzle()
-            # print('added left')
 
         if curr.check_up():
             up = copy.deepcopy(curr)
             up.move_up(choice)
             pq.put((up.f, up))
-            # print(f'f: {up.f}, g: {up.g}, h: {up.h}')
-            # up.print_puzzle()
-            # print('added up')
 
         if curr.check_down():
             down = copy.deepcopy(curr)
             down.move_down(choice)
             pq.put((down.f, down))
-            # print(f'f: {down.f}, g: {down.g}, h: {down.h}')
-            # down.print_puzzle()
-            # print('added down')
 
     def misplaced(self):
         numMisplaced = 0
@@ -191,25 +179,17 @@ class Angelica:
             curr = pq.queue[0][1]
             print(f'The best state to expand with g(n) = {curr.g} and h(n) = {curr.h} is:')
             curr.print_puzzle()
+            print('')
 
             found = False
             if curr.puzzle != curr.goal:
                 curr.expand(pq, choice)
                 
-                for i in range(len(visited)):
-                    if curr.puzzle == visited[i]:
-                        if curr.f < visited[i].f:
-                            curr, visited[i] = visited[i], curr
-                        found = True
-                        break
-                
-                if not found:
-                    visited.append(curr)
+                if curr.puzzle not in visited:
+                    visited.append(curr.puzzle)
 
                 if pq.qsize() > maxQueueSize:
-                    print(pq.qsize())
                     maxQueueSize = pq.qsize()
-                    print(maxQueueSize)
 
             else:
                 print('You\'ve reached your goal!')
@@ -227,10 +207,12 @@ def main():
         puzzle_row = puzzle_row.split(' ')
         puzzleTemp.append(puzzle_row)
 
+    print('')
     print('1. Uniform Cost Search')
     print('2. A* with Misplaced Tile Heuristic')
     print('3. A* with Manhattan Distance Heuristic')
     choice = int(input('Which search algorithm would you like to use? (input number choice): '))
+    print('')
 
     start = time.perf_counter()
 
