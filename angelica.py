@@ -15,8 +15,7 @@ class Angelica:
         self.g = 0
         self.h = 0
         self.f = self.g + self.h
-        # self.blank = self.find_blank()
-        self.blank = (0,0)
+        self.blank = self.find_blank()
         self.goal = [['A','N','G'], ['E','L','I'], ['C','A','.']]
 
     def go_right(self, choice):
@@ -86,6 +85,21 @@ class Angelica:
     def check_down(self):
         i, j = self.blank
         return i != self.size - 1
+    
+    def find_blank(self):
+        for i in range(3):
+            for j in range(self.size):
+                if self.puzzle[i][j] == '.':
+                    return (i, j)
+                
+    def print_puzzle(self):
+        for i in range(self.size):
+            print("[", end="")
+            for j in range(self.size):
+                print(self.puzzle[i][j], end="")
+                if j != self.size - 1:
+                    print(",", end="")
+            print("]")
 
     
 def main():
@@ -104,6 +118,7 @@ def main():
     puzzle = Angelica(puzzleTemp)
     pq = PriorityQueue()
     pq.put((puzzle.f, puzzle))
+
 
 
 if __name__ == '__main__':
