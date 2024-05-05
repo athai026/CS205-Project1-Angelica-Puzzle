@@ -1,5 +1,6 @@
 from queue import PriorityQueue
 import copy
+import time
 
 class Angelica:
     def __init__(self):
@@ -224,6 +225,8 @@ def main():
     print('3. A* with Manhattan Distance Heuristic')
     choice = int(input('Which search algorithm would you like to use? (input number choice): '))
 
+    start = time.perf_counter()
+
     puzzle = Angelica(puzzleTemp)
     if choice == 2:
         puzzle.h = puzzle.misplaced()
@@ -236,6 +239,10 @@ def main():
     pq.put((puzzle.f, puzzle))
     
     puzzle.search(pq, choice)
+
+    end = time.perf_counter()
+    
+    print(f'Elapsed time: {end - start :0.5f} seconds')
 
 
 
