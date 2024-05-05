@@ -124,7 +124,48 @@ class Angelica:
             left.move_down(choice)
             pq.put((down.f, down))
 
-        
+    def misplaced(self):
+        numMisplaced = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.puzzle[i][j] != '.':
+                    if self.puzzle[i][j] != self.goal[i][j]:
+                        numMisplaced += 1
+
+        return numMisplaced
+    
+    def manhattan(self):
+        heuristic = 0
+
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.puzzle[i][j] != '.':
+                    if self.puzzle[i][j] != self.goal[i][j]:
+                        if self.puzzle[i][j] == 'A':
+                            A1 = (0,0)
+                            A2 = (2,1)
+                            A1dist = abs(i - A1[0]) + abs(j - A1[1])
+                            A2dist = abs(i - A2[0]) + abs(j - A2[1])
+                            heuristic += min(A1dist, A2dist)
+                        else:
+                            goal_position = self.find_goal(self.puzzle[i][j])
+                            heuristic += abs(i - goal_position[0]) + abs(j - goal_position[1])
+
+        return heuristic
+    
+    def find_goal(letter):
+        if letter == 'N':
+            return (0,1)
+        if letter == 'G':
+            return (0,2)
+        if letter == 'E':
+            return (1,0)
+        if letter == 'L':
+            return (1,1)
+        if letter == 'I':
+            return (1,2)
+        if letter == 'C':
+            return (2,0)
 
 def main():
 
