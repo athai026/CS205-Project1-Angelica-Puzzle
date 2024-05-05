@@ -1,4 +1,5 @@
 from queue import PriorityQueue
+import copy
 
 class Angelica:
     def __init__(self):
@@ -17,6 +18,9 @@ class Angelica:
         self.f = self.g + self.h
         self.blank = self.find_blank()
         self.goal = [['A','N','G'], ['E','L','I'], ['C','A','.']]
+
+    def __lt__(self, rhs):
+        return self.f < rhs.f
 
     def move_right(self, choice):
         i, j = self.blank
@@ -101,28 +105,40 @@ class Angelica:
                     print(",", end="")
             print("]")
 
-    def expand(pq, choice):
-        curr = pq.get()
+    def expand(self, pq, choice):
+        curr = pq.get()[1]
 
         if curr.check_right():
-            right = curr
+            right = copy.deepcopy(curr)
             right.move_right(choice)
             pq.put((right.f, right))
+            # print(f'f: {right.f}, g: {right.g}, h: {right.h}')
+            # right.print_puzzle()
+            # print('added right')
 
         if curr.check_left():
-            left = curr
+            left = copy.deepcopy(curr)
             left.move_left(choice)
             pq.put((left.f, left))
+            # print(f'f: {left.f}, g: {left.g}, h: {left.h}')
+            # left.print_puzzle()
+            # print('added left')
 
         if curr.check_up():
-            up = curr
+            up = copy.deepcopy(curr)
             up.move_up(choice)
             pq.put((up.f, up))
+            # print(f'f: {up.f}, g: {up.g}, h: {up.h}')
+            # up.print_puzzle()
+            # print('added up')
 
         if curr.check_down():
-            down = curr
-            left.move_down(choice)
+            down = copy.deepcopy(curr)
+            down.move_down(choice)
             pq.put((down.f, down))
+            # print(f'f: {down.f}, g: {down.g}, h: {down.h}')
+            # down.print_puzzle()
+            # print('added down')
 
     def misplaced(self):
         numMisplaced = 0
@@ -153,7 +169,7 @@ class Angelica:
 
         return heuristic
     
-    def find_goal(letter):
+    def find_goal(self, letter):
         if letter == 'N':
             return (0,1)
         if letter == 'G':
@@ -166,6 +182,34 @@ class Angelica:
             return (1,2)
         if letter == 'C':
             return (2,0)
+        
+    def search(self, pq, choice):
+        visited = []
+
+        while not pq.empty():
+            curr = pq.queue[0][1]
+            print(f'The best state to expand with g(n) = {curr.g} and h(n) = {curr.h} is:')
+            curr.print_puzzle()
+
+            found = False
+            if curr.puzzle != curr.goal:
+                curr.expand(pq, choice)
+                
+                for i in range(len(visited)):
+                    if curr.puzzle == visited[i]:
+                        if curr.f < visited[i].f:
+                            curr, visited[i] = visited[i], curr
+                        found = True
+                        break
+                
+                if not found:
+                    visited.append(curr)
+
+            else:
+                print('You\'ve reached your goal!')
+                curr.print_puzzle()
+                break
+
 
 def main():
 
@@ -178,11 +222,20 @@ def main():
     print('1. Uniform Cost Search')
     print('2. A* with Misplaced Tile Heuristic')
     print('3. A* with Manhattan Distance Heuristic')
-    choice = input('Which search algorithm would you like to use? (input number choice): ')
+    choice = int(input('Which search algorithm would you like to use? (input number choice): '))
 
     puzzle = Angelica(puzzleTemp)
+    if choice == 2:
+        puzzle.h = puzzle.misplaced()
+        puzzle.f = puzzle.g + puzzle.h
+    elif choice == 3:
+        puzzle.h = puzzle.manhattan()
+        puzzle.f = puzzle.g + puzzle.h
+
     pq = PriorityQueue()
     pq.put((puzzle.f, puzzle))
+    
+    puzzle.search(pq, choice)
 
 
 
