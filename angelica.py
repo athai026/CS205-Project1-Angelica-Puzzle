@@ -1,29 +1,23 @@
-class NPuzzle:
+from queue import PriorityQueue
+
+class Angelica:
     def __init__(self):
-        self.size = 0
+        self.size = 3
         self.g = 0
         self.h = 0
         self.f = self.g + self.h
-        self.blank = (0, 0)
+        self.blank = (0,0)
         self.goal = [['','',''], ['','',''], ['','','']]
 
-    def __init__(self, puzzle, puzzle_size):
+    def __init__(self, puzzle):
         self.puzzle = puzzle
-        self.size = puzzle_size
+        self.size = 3
         self.g = 0
         self.h = 0
         self.f = self.g + self.h
-        self.blank = self.find_blank()
+        # self.blank = self.find_blank()
+        self.blank = (0,0)
         self.goal = [['A','N','G'], ['E','L','I'], ['C','A','.']]
-
-    def __init__(self, p1):
-        self.puzzle = p1.puzzle
-        self.size = p1.size
-        self.g = p1.g
-        self.h = p1.h
-        self.f = p1.f
-        self.blank = p1.blank
-        self.goal = p1.goal
 
     def go_right(self, choice):
         i, j = self.blank
@@ -94,3 +88,23 @@ class NPuzzle:
         return i != self.size - 1
 
     
+def main():
+
+    puzzleTemp = []
+    for i in range(3):
+        puzzle_row = input(f'Input characters for row {i+1} separated by spaces: ')
+        puzzle_row = puzzle_row.split(' ')
+        puzzleTemp.append(puzzle_row)
+
+    print('1. Uniform Cost Search')
+    print('2. A* with Misplaced Tile Heuristic')
+    print('3. A* with Manhattan Distance Heuristic')
+    choice = input('Which search algorithm would you like to use? (input number choice): ')
+
+    puzzle = Angelica(puzzleTemp)
+    pq = PriorityQueue()
+    pq.put((puzzle.f, puzzle))
+
+
+if __name__ == '__main__':
+    main()
