@@ -18,55 +18,55 @@ class Angelica:
         self.blank = self.find_blank()
         self.goal = [['A','N','G'], ['E','L','I'], ['C','A','.']]
 
-    def go_right(self, choice):
+    def move_right(self, choice):
         i, j = self.blank
         self.puzzle[i][j], self.puzzle[i][j + 1] = self.puzzle[i][j + 1], self.puzzle[i][j]
         self.blank = (i, j + 1)
         self.g += 1
 
         if choice == 2:
-            self.h = self.find_misplaced()
+            self.h = self.misplaced()
         elif choice == 3:
-            self.h = self.manhattan_distance()
+            self.h = self.manhattan()
 
         self.f = self.g + self.h
 
-    def go_left(self, choice):
+    def move_left(self, choice):
         i, j = self.blank
         self.puzzle[i][j], self.puzzle[i][j - 1] = self.puzzle[i][j - 1], self.puzzle[i][j]
         self.blank = (i, j - 1)
         self.g += 1
 
         if choice == 2:
-            self.h = self.find_misplaced()
+            self.h = self.misplaced()
         elif choice == 3:
-            self.h = self.manhattan_distance()
+            self.h = self.manhattan()
 
         self.f = self.g + self.h
 
-    def go_up(self, choice):
+    def move_up(self, choice):
         i, j = self.blank
         self.puzzle[i][j], self.puzzle[i - 1][j] = self.puzzle[i - 1][j], self.puzzle[i][j]
         self.blank = (i - 1, j)
         self.g += 1
 
         if choice == 2:
-            self.h = self.find_misplaced()
+            self.h = self.misplaced()
         elif choice == 3:
-            self.h = self.manhattan_distance()
+            self.h = self.manhattan()
 
         self.f = self.g + self.h
 
-    def go_down(self, choice):
+    def move_down(self, choice):
         i, j = self.blank
         self.puzzle[i][j], self.puzzle[i + 1][j] = self.puzzle[i + 1][j], self.puzzle[i][j]
         self.blank = (i + 1, j)
         self.g += 1
 
         if choice == 2:
-            self.h = self.find_misplaced()
+            self.h = self.misplaced()
         elif choice == 3:
-            self.h = self.manhattan_distance()
+            self.h = self.manhattan()
 
         self.f = self.g + self.h
 
@@ -101,7 +101,31 @@ class Angelica:
                     print(",", end="")
             print("]")
 
-    
+    def expand(pq, choice):
+        curr = pq.get()
+
+        if curr.check_right():
+            right = curr
+            right.move_right(choice)
+            pq.put((right.f, right))
+
+        if curr.check_left():
+            left = curr
+            left.move_left(choice)
+            pq.put((left.f, left))
+
+        if curr.check_up():
+            up = curr
+            up.move_up(choice)
+            pq.put((up.f, up))
+
+        if curr.check_down():
+            down = curr
+            left.move_down(choice)
+            pq.put((down.f, down))
+
+        
+
 def main():
 
     puzzleTemp = []
