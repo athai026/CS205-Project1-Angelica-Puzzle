@@ -184,8 +184,8 @@ class Angelica:
         if letter == 'C':
             return (2,0)
         
-    def search(self, pq, choice):
-        visited = []
+    def search(self, pq, choice, visited):
+        maxQueueSize = 1
 
         while not pq.empty():
             curr = pq.queue[0][1]
@@ -206,11 +206,18 @@ class Angelica:
                 if not found:
                     visited.append(curr)
 
+                if pq.qsize() > maxQueueSize:
+                    print(pq.qsize())
+                    maxQueueSize = pq.qsize()
+                    print(maxQueueSize)
+
             else:
                 print('You\'ve reached your goal!')
                 curr.print_puzzle()
+                print(f'Depth of solution: {curr.g}')
                 break
 
+        return maxQueueSize
 
 def main():
 
@@ -237,12 +244,14 @@ def main():
 
     pq = PriorityQueue()
     pq.put((puzzle.f, puzzle))
-    
-    puzzle.search(pq, choice)
+    visited = []
+    maxQueueSize = puzzle.search(pq, choice, visited)
 
     end = time.perf_counter()
     
     print(f'Elapsed time: {end - start :0.5f} seconds')
+    print(f'Maximum queue size: {maxQueueSize}')
+    print(f'Number of nodes expanded {len(visited)}')
 
 
 
