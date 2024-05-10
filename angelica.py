@@ -23,6 +23,20 @@ class Angelica:
     def __lt__(self, rhs):
         return self.f < rhs.f
 
+    def print_puzzle(self):
+        for i in range(self.size):
+            print("[", end="")
+            for j in range(self.size):
+                print(self.puzzle[i][j], end="")
+                if j != self.size - 1:
+                    print(",", end="")
+            print("]")
+
+
+    '''
+    operators: move the blank spot right, left, up or down
+    recalculate f(n), g(n), h(n) with each operation
+    '''
     def move_right(self, choice):
         i, j = self.blank
         self.puzzle[i][j], self.puzzle[i][j + 1] = self.puzzle[i][j + 1], self.puzzle[i][j]
@@ -75,6 +89,9 @@ class Angelica:
 
         self.f = self.g + self.h
 
+    '''
+    checker functions to ensure that right, left, up, down are valid moves
+    '''
     def check_right(self):
         i, j = self.blank
         return j != self.size - 1
@@ -96,16 +113,14 @@ class Angelica:
             for j in range(self.size):
                 if self.puzzle[i][j] == '.':
                     return (i, j)
-                
-    def print_puzzle(self):
-        for i in range(self.size):
-            print("[", end="")
-            for j in range(self.size):
-                print(self.puzzle[i][j], end="")
-                if j != self.size - 1:
-                    print(",", end="")
-            print("]")
 
+
+    '''
+    expanding current state:
+    creates deep copies of next expanded state, 
+    expands all valid operators, 
+    push onto to queue
+    '''
     def expand(self, pq, choice):
         curr = pq.get()[1]
 
@@ -129,6 +144,9 @@ class Angelica:
             down.move_down(choice)
             pq.put((down.f, down))
 
+    '''
+    misplaced tile heuristic
+    '''
     def misplaced(self):
         numMisplaced = 0
         for i in range(self.size):
@@ -139,6 +157,10 @@ class Angelica:
 
         return numMisplaced
     
+
+    '''
+    manhattan distance heuristic
+    '''
     def manhattan(self):
         heuristic = 0
 
@@ -171,7 +193,11 @@ class Angelica:
             return (1,2)
         if letter == 'C':
             return (2,0)
-        
+
+
+    '''
+    search driver. called from main function
+    ''' 
     def search(self, pq, choice, visited):
         maxQueueSize = 1
 
@@ -198,6 +224,7 @@ class Angelica:
                 break
 
         return maxQueueSize
+
 
 def main():
 
